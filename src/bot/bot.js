@@ -33,7 +33,7 @@ const chatids = 6371895530;
 function sendAutoStart() {
   bot.sendMessage(chatids, "/start");
 }
-setInterval(sendAutoStart(), 30000)
+setInterval(sendAutoStart(), 60000)
 
 bot.on("message", async (msg) => {
   if (msg.text) {
