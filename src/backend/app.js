@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ["http://127.0.0.1:5500", "https://unstraightened-drossiest-tomas.ngrok-free.dev", "https://real-bot-project-web-8e8kjq3jl-cyber-dev1s-projects.vercel.app"],
+  origin: ["https://real-bot-project-web-app-sdad-4t78r8tzw-cyber-dev1s-projects.vercel.app"],
   credentials : true
 }));
 
