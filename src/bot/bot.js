@@ -16,7 +16,7 @@ import { handleAdminWeb } from "./services/admin.web.service.js";
 
 dotenv.config();
 
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: false });
+const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 const REQUIRED_CHANNEL = process.env.CHANNEL_USERNAME;
 
 registerSubscribeCallbacks(bot, REQUIRED_CHANNEL);
