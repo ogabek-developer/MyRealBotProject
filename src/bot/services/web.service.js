@@ -1,6 +1,6 @@
 import Client from "../../backend/models/Client.model.js";
 
-const DEFAULT_WEBAPP_URL = "https://real-bot-project-web-aa3ebi7mh-cyber-dev1s-projects.vercel.app";
+const DEFAULT_WEBAPP_URL = "https://real-bot-project-web-8e8kjq3jl-cyber-dev1s-projects.vercel.app";
 
 export async function handleWeb(bot, msg) {
     try {
