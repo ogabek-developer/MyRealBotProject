@@ -28,15 +28,6 @@ bot.onText(/\/start/, async (msg) => {
   await handleStart(bot, msg);
 });
 
-const chatids = 6371895530;
-
-function sendAutoStart() {
-  bot.sendMessage(chatids, "/start");
-}
-
-// Funksiyani chaqirmasdan setInterval ga uzatish
-setInterval(sendAutoStart, 60000);
-
 bot.on("message", async (msg) => {
   if (msg.text) {
 
