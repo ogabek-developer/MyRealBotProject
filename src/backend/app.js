@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ["https://real-bot-project-web-app-zhkx.vercel.app/"],
+  origin: "https://real-bot-project-web-app-zhkx.vercel.app",
   credentials : true
 }));
 
