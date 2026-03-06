@@ -1,7 +1,7 @@
 import Admin from "../../backend/models/Admin.model.js";
 
 const DEFAULT_WEBAPP_URL_ADMIN =
-  "https://real-bot-project-web-app-zhkx-1p4ixa6an-cyber-dev1s-projects.vercel.app/phoneAdsBot/index.html";
+  "https://real-bot-project-web-app-zhkx.vercel.app/phoneAdsBot/index.html";
 
 export async function handleAdminWeb(bot, msg) {
   try {

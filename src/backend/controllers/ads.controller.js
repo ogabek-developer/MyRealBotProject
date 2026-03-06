@@ -234,6 +234,7 @@ async CREATE_ADMIN_AD(req, res) {
 
       // CHAT ID olish
       const chat = await bot.getChat(tg_username);
+      console.log(chat);
       if (!chat?.id) return res.status(400).json({ message: "Guruh topilmadi" });
       const chatId = chat.id;
 
