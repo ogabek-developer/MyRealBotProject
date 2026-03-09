@@ -6,28 +6,30 @@ export const adsRouter = express.Router();
 
 adsRouter.get("/get/all", adsController.GET_ALL);
 adsRouter.get("/get/:id", adsController.GET_BY_ID);
-adsRouter.post("/admin/ad",
-  upload.single("goods_picture"),
-  adsController.CREATE_ADMIN_AD
-)
+adsRouter.get("/get/client/by", adsController.GET_ALL_ADS_BYCLIENT);
+adsRouter.get("/get/region/:region", adsController.GET_BY_REGION);
 
+// ── CREATE: 1–3 ta rasm ──────────────────────────────────────────────────────
 adsRouter.post(
   "/create",
-  upload.single("goods_picture"),
+  upload.array("goods_picture", 3),   // ← single → array
   adsController.CREATE
 );
 
 
-adsRouter.post('/share', adsController.SHARE_ADS)
+// ── UPLOAD (Cloudinary pre-upload, frontend uchun) ───────────────────────────
+adsRouter.post(
+  "/upload",
+  upload.array("goods_picture", 3),
+  adsController.UPLOAD_IMAGES
+);
 
-adsRouter.get('/get/client/by', adsController.GET_ALL_ADS_BYCLIENT)
-
-adsRouter.get("/get/region/:region", adsController.GET_BY_REGION);
-
+// ── UPDATE: ixtiyoriy yangi rasmlar ──────────────────────────────────────────
 adsRouter.put(
   "/update/:id",
-  upload.single("goods_picture"),
+  upload.array("goods_picture", 3),   // ← single → array
   adsController.UPDATE
 );
 
+adsRouter.post("/share", adsController.SHARE_ADS);
 adsRouter.delete("/delete/:id", adsController.DELETE);
