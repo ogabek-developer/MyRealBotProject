@@ -22,6 +22,8 @@ adsRouter.post('/share', adsController.SHARE_ADS)
 
 adsRouter.get('/get/client/by', adsController.GET_ALL_ADS_BYCLIENT)
 
+adsRouter.get("/get/region/:region", adsController.GET_BY_REGION);
+
 adsRouter.put(
   "/update/:id",
   upload.single("goods_picture"),

@@ -16,9 +16,9 @@ import { handleAdminWeb } from "./services/admin.web.service.js";
 
 dotenv.config();
 
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling : {interval : 300, autoStart : true, params : {timeout : 10}} });
+const bot = new TelegramBot(process.env.BOT_TOKEN, { polling : true });
 const REQUIRED_CHANNEL = process.env.CHANNEL_USERNAME;
-bot.deleteWebHook()
+// bot.deleteWebHook()
 
 registerSubscribeCallbacks(bot, REQUIRED_CHANNEL);
 
