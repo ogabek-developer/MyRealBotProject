@@ -9,25 +9,21 @@ adsRouter.get("/get/:id", adsController.GET_BY_ID);
 adsRouter.get("/get/client/by", adsController.GET_ALL_ADS_BYCLIENT);
 adsRouter.get("/get/region/:region", adsController.GET_BY_REGION);
 
-// ── CREATE: 1–3 ta rasm ──────────────────────────────────────────────────────
 adsRouter.post(
   "/create",
-  upload.array("goods_picture", 3),   // ← single → array
+  upload.array("goods_picture", 3),
   adsController.CREATE
 );
 
-
-// ── UPLOAD (Cloudinary pre-upload, frontend uchun) ───────────────────────────
 adsRouter.post(
   "/upload",
   upload.array("goods_picture", 3),
   adsController.UPLOAD_IMAGES
 );
 
-// ── UPDATE: ixtiyoriy yangi rasmlar ──────────────────────────────────────────
 adsRouter.put(
   "/update/:id",
-  upload.array("goods_picture", 3),   // ← single → array
+  upload.array("goods_picture", 3),
   adsController.UPDATE
 );
 

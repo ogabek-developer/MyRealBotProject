@@ -1,6 +1,6 @@
 import Client from "../../backend/models/Client.model.js";
 
-const DEFAULT_WEBAPP_URL = "https://real-bot-project-web-app.vercel.app";
+const DEFAULT_WEBAPP_URL = "https://unstraightened-drossiest-tomas.ngrok-free.dev";
 
 export async function handleWeb(bot, msg) {
     try {
