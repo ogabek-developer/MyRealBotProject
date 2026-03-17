@@ -1,6 +1,6 @@
 import Admin from "../../backend/models/Admin.model.js";
 
-const DEFAULT_WEBAPP_URL_ADMIN ="https://real-bot-project-web-app.vercel.app/phoneAdsBot/index.html";
+const DEFAULT_WEBAPP_URL_ADMIN ="https://unstraightened-drossiest-tomas.ngrok-free.dev/phoneAdsBot/index.html";
 
 export async function handleAdminWeb(bot, msg) {
   try {

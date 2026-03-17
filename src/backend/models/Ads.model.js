@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import Client from "./Client.model.js";
 
 const Advertisement = sequelize.define("Advertisement", {
   id: {
@@ -10,7 +9,6 @@ const Advertisement = sequelize.define("Advertisement", {
   },
 
   advertisement_name: DataTypes.STRING,
-
   price: DataTypes.FLOAT,
 
   goods_picture: {
@@ -55,8 +53,12 @@ const Advertisement = sequelize.define("Advertisement", {
 
   goods_condition: {
     type: DataTypes.ENUM(
-      "yangi", "ishlatilgan", "qisman tiklangan",
-      "новый", "использованный", "отремонтированный"
+      "yangi",
+      "ishlatilgan",
+      "qisman tiklangan",
+      "новый",
+      "использованный",
+      "отремонтированный"
     ),
     allowNull: false,
     defaultValue: "yangi",
@@ -66,27 +68,34 @@ const Advertisement = sequelize.define("Advertisement", {
 
   region: {
     type: DataTypes.ENUM(
-      "Toshkent", "Andijon", "Fargona", "Namangan", "Samarqand", "Buxoro",
-      "Xorazm", "Qashqadaryo", "Surxondaryo", "Jizzax", "Sirdaryo", "Navoiy"
+      "Toshkent",
+      "Andijon",
+      "Fargona",
+      "Namangan",
+      "Samarqand",
+      "Buxoro",
+      "Xorazm",
+      "Qashqadaryo",
+      "Surxondaryo",
+      "Jizzax",
+      "Sirdaryo",
+      "Navoiy"
     ),
     allowNull: false,
     defaultValue: "Toshkent",
   },
 
-  // 0 dan boshlanadi — haqiqiy views bot polling orqali yoziladi
   views: {
     type: DataTypes.BIGINT,
     defaultValue: 0,
   },
 
-  // Telegram kanal message ID lari — JSON massiv ('[ 123, 456 ]')
   telegramMessageIds: {
     type: DataTypes.TEXT,
     allowNull: true,
     defaultValue: null,
   },
 
-  // E'lon yuborilgan kanal chat ID si
   telegramChatId: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -94,7 +103,5 @@ const Advertisement = sequelize.define("Advertisement", {
   },
 });
 
-Advertisement.belongsTo(Client, { foreignKey: "clientId", as: "client" });
-Client.hasMany(Advertisement, { foreignKey: "clientId", as: "ads" });
 
 export default Advertisement;

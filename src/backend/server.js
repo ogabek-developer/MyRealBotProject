@@ -3,6 +3,7 @@ import app from "./app.js";
 import sequelize from "./config/db.js";
 import dotenv from "dotenv";
 import bot from "../bot/bot.js";
+import "./models/associations.js";
 // import { updateViewsFromPost } from "../bot/services/views.polling.service.js";
 
 dotenv.config();
