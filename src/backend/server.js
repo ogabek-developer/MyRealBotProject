@@ -67,7 +67,7 @@ dotenv.config();
 
     // Server ni ishga tushirish
     app.listen(PORT, () => {
-      console.log(`\n🚀 Server ishlamoqda: http://localhost:${PORT}`);
+      console.log(`\n🚀 Server ishlamoqda:${PORT} - port`);
       
       if (APP_URL) {
         console.log(`🌐 Public URL: ${APP_URL}`);
