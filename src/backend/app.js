@@ -14,6 +14,7 @@ app.use(
     origin: [
       "http://localhost:5000",
       process.env.APP_URL,
+      "https://real-bot-project-web-app.vercel.app",
     ].filter(Boolean),
     credentials: true,
   })
