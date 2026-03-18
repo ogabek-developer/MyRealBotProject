@@ -12,6 +12,7 @@ import {
 } from "../../utils/ads.validation.js";
 import bot from "../../bot/bot.js";
 import Admin from "../models/Admin.model.js";
+import adShareQueue from "../../utils/ads.queue.js";
 
 const rams = ["2GB", "3GB", "4GB", "6GB", "8GB", "12GB", "16GB"];
 const roms = ["16GB", "32GB", "64GB", "128GB", "256GB", "512GB", "1TB"];
@@ -134,6 +135,32 @@ export default {
       if (!ad)
         return res.status(404).json({ message: "E'lon topilmadi" });
       res.json(ad);
+    } catch (error) {
+      return globalError(error, res);
+    }
+  },
+
+  // ⭐ GET SIMILAR ADS BY MODEL
+  async GET_SIMILAR_BY_MODEL(req, res) {
+    try {
+      const { id, model } = req.params;
+      
+      if (!model) {
+        return res.status(400).json({ message: "Model kiritilishi shart" });
+      }
+
+      // O'sha model bo'yicha, lekin o'sha ads emas
+      const ads = await Advertisement.findAll({
+        where: {
+          model: model,
+          id: { [Advertisement.sequelize.Sequelize.Op.ne]: id }
+        },
+        include: { model: Client, as: "client" },
+        order: [["createdAt", "DESC"]],
+        limit: 3, // Faqat 3 ta
+      });
+
+      res.json(ads);
     } catch (error) {
       return globalError(error, res);
     }
@@ -322,86 +349,71 @@ export default {
     }
   },
 
-  // ── SHARE ADS ──────────────────────────────────────────────────────────────
-  // E'lonni kanalga yuboradi va telegramMessageIds, telegramChatId ni saqlaydi.
-  // Views 0 dan boshlanadi.
-  // Webhook rejimida Telegram o'zi "edited_channel_post" eventini yuboradi →
-  // views.polling.service.js → updateViewsFromPost() → DB yangilanadi.
+  // ⭐ SHARE ADS - Queue bilan
   async SHARE_ADS(req, res) {
     try {
       const { clientId, adId } = req.body;
 
-      const tg_username = process.env.CHANNEL_USERNAME;
-
-      if (!tg_username?.startsWith("@"))
+      if (!clientId || !adId) {
         return res.status(400).json({
-          message: "CHANNEL_USERNAME noto'g'ri — .env ni tekshiring",
+          message: "clientId va adId talab qilinadi"
         });
+      }
 
+      // E'lon mavjudligini tekshirish
       const ad = await Advertisement.findOne({
-        where: { id: adId, clientId },
-        include: { model: Client, as: "client" },
+        where: { id: adId, clientId }
       });
-      if (!ad)
+
+      if (!ad) {
         return res.status(404).json({ message: "E'lon topilmadi" });
+      }
 
-      const chat = await bot.getChat(tg_username);
-      if (!chat?.id)
-        return res.status(400).json({ message: "Kanal topilmadi" });
-      const chatId = chat.id;
-
-      const me = await bot.getMe();
-      const botMember = await bot.getChatMember(chatId, me.id);
-      if (!["administrator", "creator"].includes(botMember.status))
-        return res
-          .status(400)
-          .json({ message: "Bot bu kanalda admin emas" });
-
-      const caption = `
-📱 <b>${ad.advertisement_name}</b>
-
-💰 <b>Narxi:</b> ${ad.price} ${ad.price_currency.toUpperCase()}
-
-📦 <b>Model:</b> ${ad.model.toUpperCase()}
-💾 <b>RAM:</b> ${ad.ram}
-🗄️ <b>ROM:</b> ${ad.rom}
-${goodsConditionLabels[ad.goods_condition] || ad.goods_condition}
-
-🆔 <b>Username:</b> @${ad.client.tg_username}
-📞 <b>Tel:</b> ${ad.client.phone}
-📍 <b>Region:</b> ${ad.region}
-
-📝 <b>Tavsif:</b>
-${ad.short_description}
-`.trim();
-
-      const pictures = normalizePictures(ad.goods_picture);
-
-      const mediaGroup = pictures.map((url, idx) => ({
-        type: "photo",
-        media: url,
-        ...(idx === 0 ? { caption, parse_mode: "HTML" } : {}),
-      }));
-
-      const sentMessages = await bot.sendMediaGroup(chatId, mediaGroup);
-
-      // Message ID larni saqlaydi — webhook event bu ID orqali topadi
-      const messageIds = sentMessages.map((m) => m.message_id);
-
-      await ad.update({
-        telegramMessageIds: JSON.stringify(messageIds),
-        telegramChatId: String(chatId),
-        views: 0, // Yangi yuborildi, views 0 dan boshlanadi
+      // Queue ga qo'shish
+      const job = await adShareQueue.add('share-ad', {
+        adId,
+        clientId
+      }, {
+        jobId: `ad-${adId}-${Date.now()}`, // Unique job ID
       });
 
       return res.json({
-        message: "E'lon kanalga yuborildi ✅",
-        telegramMessageIds: messageIds,
-        views: 0,
-        note: "Views Telegram webhook orqali avtomatik yangilanadi",
+        success: true,
+        message: "E'lon navbatga qo'shildi. Tez orada kanalga yuboriladi.",
+        message_ru: "Объявление добавлено в очередь. Скоро будет отправлено в канал.",
+        jobId: job.id,
+        queuePosition: await adShareQueue.count(),
       });
+
     } catch (error) {
       console.error("SHARE_ADS ERROR 👉", error.message || error);
+      return globalError(error, res);
+    }
+  },
+
+  // ⭐ CHECK QUEUE STATUS
+  async CHECK_SHARE_STATUS(req, res) {
+    try {
+      const { jobId } = req.params;
+
+      const job = await adShareQueue.getJob(jobId);
+
+      if (!job) {
+        return res.status(404).json({ message: "Job topilmadi" });
+      }
+
+      const state = await job.getState();
+      const progress = job.progress;
+
+      return res.json({
+        jobId: job.id,
+        state, // completed, failed, active, waiting, delayed
+        progress,
+        data: job.data,
+        returnvalue: job.returnvalue,
+      });
+
+    } catch (error) {
       return globalError(error, res);
     }
   },

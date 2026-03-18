@@ -27,5 +27,10 @@ adsRouter.put(
   adsController.UPDATE
 );
 
+adsRouter.get('/similar/:id/:model', adsController.GET_SIMILAR_BY_MODEL);
+
+// ⭐ Share queue status
+adsRouter.get('/share/status/:jobId', adsController.CHECK_SHARE_STATUS);
+
 adsRouter.post("/share", adsController.SHARE_ADS);
 adsRouter.delete("/delete/:id", adsController.DELETE);

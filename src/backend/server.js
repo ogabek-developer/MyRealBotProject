@@ -4,6 +4,8 @@ import sequelize from "./config/db.js";
 import dotenv from "dotenv";
 import bot from "../bot/bot.js";
 import "./models/associations.js";
+import { connectRedis } from '../utils/redis.config.js';
+import '../utils/ads.worker.js'; 
 // import { updateViewsFromPost } from "../bot/services/views.polling.service.js";
 
 dotenv.config();
@@ -66,9 +68,11 @@ dotenv.config();
     }
 
     // Server ni ishga tushirish
-    app.listen(PORT, () => {
+    app.listen(PORT, async () => {
       console.log(`\n🚀 Server ishlamoqda:${PORT} - port`);
-      
+
+      await connectRedis() ;
+
       if (APP_URL) {
         console.log(`🌐 Public URL: ${APP_URL}`);
       }
